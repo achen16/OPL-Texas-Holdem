@@ -4,6 +4,7 @@ A Texas Holdem game that was created using the Scheme Programming Language in my
 
 /*******************************
  *  Alex Chen and Bobby Donald *
+ 
  ******************************/
 
 logic.rkt The code for the logic behind what combinations are in each hand and how
