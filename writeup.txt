@@ -1,0 +1,74 @@
+Alex Chen
+OPL Final Project Writeup
+
+Overview
+
+A poker game of Texas Hold'em where one player bets against 3 cpu players. Each player is dealt two cards and 
+there is also five cards in the middle. Each player must make the best hand combination and bet that their hand 
+is the best! The gui side of this code will show your two cards and every cpu's two cards around the five cards
+in the middle that are used by every player.
+
+The project is a poker game is essentially broken down into two parts: the logic or rules of the game, and the 
+graphical user interface that runs the turns of the game and displays it on the screen. I created all of the code 
+for the logic while my partner Bobby created the GUI component. This way it was clean and down the middle. The logic 
+was several hundred (close to 1000!) lines of code and really demonstrated to me how complicated a seemingly simple
+card game is to implement. It can be broken down into several different sections: creating hands and sorting the cards,
+determining the best hand and the winner, logic behind folding or raising for cpu's, and general set-up and running the 
+program without the gui.
+
+The code uses the racket games/cards library in order to create a deck of 52 cards, each with their own face values 
+and suit. This represents the actual cards and they can be "drawn" into a hand (list) to represent hands for all of the
+players. This is done by using the append function. 
+
+First, the program creates a hand of empty lists for each of the players (you and the cpu) as well as one for the
+community cards in the middle of the table. Also are other "copy" hands that are used for sorting and combining 
+each hand and the middle cards. In the gui side of the code, the graphics that are shown will show your two cards
+and two cards for each cpu with the five shared cards in the middle of the table. In the logic representation, the 
+copy lists will combine the players' hands with the five middle hands so that each hand will be identical except for
+the two original cards that they have. This makes it easy to compare hands and values or suits to determine how
+good of a hand is represented. Once all of the copy hands have seven cards (by appending the original two cards and 
+the five middle cards to a copy hand), they are sorted from lowest value (ace or 1) to highest (king or 13). There was 
+a lot of struggle sorting because the inital thought was to recurively sort the cards, but I could not figure out a way
+to do this on time. This is because the method I used was to compare the first card in the list to every other and find the
+smallest. Then append the smallest to the back of the list and use the remove method to delete the the original card.
+Since each round or sorting compared less and less cards (7 ot 6 to 5....to 2) I did not figure out how to do this recursivley
+or how to use scheme nested loops. Also, I had to use different sort functions for each round of sorting because of the 
+way I compared less cards each round. And I could not use a generic sort function that took a hand name as a lambda to sort 
+each hand using the same function. For some reason if I used say (sort x) function where x was a hand, the appends and removes 
+would not commit the changes to the hands. Therefore I had to make (sortyd your-hand) and (sortcpu1 cpu1-hand) instead.
+
+The logic also made ways to determine the winner of the round or game. This was done by comparing the hands of every player
+to determine who had the best poker hand. This was pretty straightforward and I checked to see if every hand had a pair, two pairs,
+three-of-a-kind, a straight, flush, straight-flush, and royal-flush. This was done with a variety of methods that ranged from 
+recursion, cond, if, predicates (eq? and eqv?) and #t and #f. Every method checked the certain condition to every hand and returned
+#t if that condition ocured in the hand and #f if it did not. Points were awarded to hands depending on the value of the hand with
+royal-flush scoring the highest and pair scoring the lowest. A score of 0 was awarded if no poker hand was present. Then each players'
+hands' points were compared and whoever had the highest won. If two were tied for the highest score, then a tie-breaker was needed 
+to compare the actual card values. For example, if two hands had pairs, then a function was called to check what value pair they had.
+Then they were compared. For example, a pair of 8's beat a pair of 3's and the 8's would win the game.
+
+There was also ways to determine raising and folding in the logic file. This was done in tandem with what my partner did in his file.
+Every "turn" (which is used primarily in GUI.rkt which I will discuss shortly) if a cpu had a good hand, they would raise a certain amount.
+If by the very last turn they had no viable hand, they would fold. My partner also added random chances of folding or raising to imitate
+bluffing.
+
+The GUI.rkt and the other two complimentary files were used to create a graphical user interface for the game to run on. It also implemented
+turns in which players could raise, check, or fold. The first turn, the only cards the players can see are their own and three of the five middle
+cards. They can see what poker hands they have and raise or check accordingly. Every turn, another middle card is flipped over and their hands
+are again assessed and they make the betting choice again. By the time all 5 cards in the middle are turned over, they have the option of raising,
+checking, or folding. The player has free will to choose what he or she wants to bet. The money file creates pools of $1000 for every player to have
+initially that they can bet. If you lose all your money gambling, then you lose! My partner did the gui portion of this project.
+
+The key points from the class that were used are recursion, list manipulation, lambda, data abstraction, predicates, and functions, if/cond, 
+and object orientation.Lists and lambda are used to create and manipulate card objects and hands. The lists hold the cards and lambda functions 
+are used to facilitate changes to the lists and check them for pairs, for instance. Data abstraction is used to access and alter list elements 
+and create a game that uses the objects (gui elements, money pools, cards, deck, hands). Recursion, cond/if, and, predicates (eqv?, eq?) are used 
+to check to see if a certain pokerhand condition exists. They compare each card in a hand and checks to see if the conditions are met. #t and #f 
+are also used to show if the conditions exist. Append is used to add more cards to a hand.
+
+To run the code from logic.rkt, run the code and use (set-up-game). This will run through all of the functions needed to make
+hands, determine who has the best, etc. The function (who-wins?) will give you the winner, with 1 = you win, 2 = cpu 1 
+wins, 3 = cpu2 wins, 4 = cpu3 wins, and 0 meaning tie. This will not involve any GUI, turns, raising, or folding.
+
+From gui.rkt, just running the code will automatically start the game, with GUI, turns, raising, folding, and a really fun 
+interactive experience. Have fun playing Texas Hold'em!
